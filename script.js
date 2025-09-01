@@ -21,6 +21,20 @@ window.addEventListener('load', () => {
     }, 500); // Daha hızlı yükleme
 });
 
+// Mouse Parallax Effect
+document.addEventListener('mousemove', (e) => {
+    const hero = document.querySelector('.hero');
+    if (!hero) return;
+    
+    const mouseX = e.clientX / window.innerWidth;
+    const mouseY = e.clientY / window.innerHeight;
+    
+    const floating = hero.querySelector('.floating');
+    if (floating) {
+        floating.style.transform = `translate(${mouseX * 20 - 10}px, ${mouseY * 20 - 10}px)`;
+    }
+});
+
 // === NAVBAR SCROLL EFFECT === 
 let lastScroll = 0;
 window.addEventListener('scroll', () => {
