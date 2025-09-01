@@ -1,5 +1,6 @@
 /* ===================================
    BETÜLAY KABA PORTFOLIO - SCRIPT.JS
+   PROFESSIONAL VERSION
    =================================== */
 
 // === DOM ELEMENTS === 
@@ -8,15 +9,16 @@ const navbar = document.getElementById('navbar');
 const typewriter = document.getElementById('typewriter');
 const mobileMenuToggle = document.getElementById('mobileMenuToggle');
 const mobileMenu = document.getElementById('mobileMenu');
-const hiddenDrone = document.getElementById('hiddenDrone');
 const coffeeCard = document.getElementById('coffeeCard');
 
 // === LOADING SCREEN === 
 window.addEventListener('load', () => {
     setTimeout(() => {
-        loader.style.display = 'none';
+        if (loader) {
+            loader.style.display = 'none';
+        }
         document.body.style.overflow = 'visible';
-    }, 2000);
+    }, 500); // Daha hızlı yükleme
 });
 
 // === NAVBAR SCROLL EFFECT === 
@@ -31,36 +33,31 @@ window.addEventListener('scroll', () => {
         navbar.classList.remove('scrolled');
     }
     
-    // Parallax effect for background
-    const parallax = document.querySelector('.bg-animation');
-    if (parallax) {
-        parallax.style.transform = `translateY(${currentScroll * 0.5}px)`;
-    }
-    
     lastScroll = currentScroll;
 });
 
 // === MOBILE MENU === 
-mobileMenuToggle.addEventListener('click', () => {
-    mobileMenu.classList.toggle('active');
-    mobileMenuToggle.classList.toggle('active');
-});
-
-// Close mobile menu when clicking on a link
-document.querySelectorAll('.mobile-menu-item').forEach(item => {
-    item.addEventListener('click', () => {
-        mobileMenu.classList.remove('active');
-        mobileMenuToggle.classList.remove('active');
+if (mobileMenuToggle && mobileMenu) {
+    mobileMenuToggle.addEventListener('click', () => {
+        mobileMenu.classList.toggle('active');
+        mobileMenuToggle.classList.toggle('active');
     });
-});
 
-// === TYPEWRITER EFFECT === 
+    // Close mobile menu when clicking on a link
+    document.querySelectorAll('.mobile-menu-item').forEach(item => {
+        item.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            mobileMenuToggle.classList.remove('active');
+        });
+    });
+}
+
+// === TYPEWRITER EFFECT (Simplified) === 
 const phrases = [
-    "Biyomedikal Mühendisi ",
-    "Kalite Yönetim Uzmanı ",
-    "MDR Regülasyon Eksperi ",
-    "3 Projede Ekip Lideri ",
-    "ISO 9001 İç Denetçi "
+    "Biyomedikal Mühendis",
+    "Kalite Yönetim Uzmanı",
+    "MDR Regülasyon Eksperi",
+    "ISO 9001 İç Denetçi"
 ];
 
 let phraseIndex = 0;
@@ -68,6 +65,8 @@ let charIndex = 0;
 let isDeleting = false;
 
 function typeEffect() {
+    if (!typewriter) return;
+    
     const currentPhrase = phrases[phraseIndex];
     
     if (isDeleting) {
@@ -84,24 +83,29 @@ function typeEffect() {
     } else if (isDeleting && charIndex === 0) {
         isDeleting = false;
         phraseIndex = (phraseIndex + 1) % phrases.length;
-        setTimeout(typeEffect, 500);
+        setTimeout(typeEffect, 300);
     } else {
-        setTimeout(typeEffect, isDeleting ? 50 : 100);
+        setTimeout(typeEffect, isDeleting ? 30 : 70);
     }
 }
 
 // Start typewriter effect
-typeEffect();
+if (typewriter) {
+    typeEffect();
+}
 
 // === SMOOTH SCROLLING === 
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
+        const targetId = this.getAttribute('href');
+        const target = document.querySelector(targetId);
+        
         if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
+            const offsetTop = target.offsetTop - 80; // Navbar height compensation
+            window.scrollTo({
+                top: offsetTop,
+                behavior: 'smooth'
             });
         }
     });
@@ -122,16 +126,16 @@ const statsObserver = new IntersectionObserver((entries) => {
                 const target = parseInt(stat.getAttribute('data-target'));
                 if (target) {
                     let current = 0;
-                    const increment = target / 50;
+                    const increment = target / 30;
                     const timer = setInterval(() => {
                         current += increment;
                         if (current >= target) {
-                            stat.textContent = target + '+';
+                            stat.textContent = target;
                             clearInterval(timer);
                         } else {
-                            stat.textContent = Math.floor(current) + '+';
+                            stat.textContent = Math.floor(current);
                         }
-                    }, 30);
+                    }, 40);
                 }
             });
             statsObserver.unobserve(entry.target);
@@ -154,7 +158,7 @@ const skillsObserver = new IntersectionObserver((entries) => {
                 const width = bar.getAttribute('data-width');
                 setTimeout(() => {
                     bar.style.width = width + '%';
-                }, index * 100);
+                }, index * 50);
             });
             skillsObserver.unobserve(entry.target);
         }
@@ -170,6 +174,8 @@ if (skillsSection) {
 // === PROJECT CARDS INTERACTION === 
 function toggleProjectDetail(projectId) {
     const detail = document.getElementById(projectId + '-detail');
+    if (!detail) return;
+    
     const card = detail.parentElement;
     const allDetails = document.querySelectorAll('.project-detail');
     const allCards = document.querySelectorAll('.project-card');
@@ -197,7 +203,6 @@ document.querySelectorAll('.project-card').forEach(card => {
     card.addEventListener('click', function(e) {
         // Don't toggle if clicking on the coming soon card
         if (this.classList.contains('coming-soon')) {
-            alert('Yakında yeni projelerle karşınızda olacağım! 🚀');
             return;
         }
         
@@ -215,7 +220,6 @@ const fadeObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             entry.target.classList.add('visible');
-            entry.target.style.animationDelay = `${Math.random() * 0.3}s`;
         }
     });
 }, {
@@ -228,108 +232,12 @@ fadeElements.forEach(element => {
     fadeObserver.observe(element);
 });
 
-// === EASTER EGGS === 
-
-// Hidden Drone Click
-hiddenDrone.addEventListener('click', () => {
-    alert('🎉 Gizli Drone\'u Buldun! 3 projede ekip liderliği yapan bir mühendisim! 🚁');
-    
-    // Make the drone fly away
-    hiddenDrone.style.animation = 'flyAway 2s ease-out forwards';
-    setTimeout(() => {
-        hiddenDrone.style.animation = 'fly 5s ease-in-out infinite';
-    }, 2000);
-});
-
-// Coffee Card Click
-coffeeCard.addEventListener('click', () => {
-    alert('☕ Kahve davetiniz için betulaykaba.work@gmail.com adresine mail atabilirsiniz!');
-});
-
-// Konami Code Easter Egg
-const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-let konamiIndex = 0;
-
-document.addEventListener('keydown', (e) => {
-    if (e.key === konamiCode[konamiIndex]) {
-        konamiIndex++;
-        if (konamiIndex === konamiCode.length) {
-            activateKonamiCode();
-            konamiIndex = 0;
-        }
-    } else {
-        konamiIndex = 0;
-    }
-});
-
-function activateKonamiCode() {
-    document.body.style.animation = 'rotate 2s linear';
-    
-    // Create confetti effect
-    createConfetti();
-    
-    setTimeout(() => {
-        alert('🎮 Konami Code Activated! You found the secret! 🎉\n\nYou\'re now a certified portfolio explorer!');
-        document.body.style.animation = '';
-    }, 2000);
+// === COFFEE CARD CLICK === 
+if (coffeeCard) {
+    coffeeCard.addEventListener('click', () => {
+        window.location.href = 'mailto:betulaykaba.work@gmail.com?subject=Kahve Sohbeti';
+    });
 }
-
-// === CONFETTI EFFECT === 
-function createConfetti() {
-    const colors = ['#FF6B35', '#0080FF', '#FFD700', '#FF1493', '#00CED1'];
-    const confettiCount = 100;
-    
-    for (let i = 0; i < confettiCount; i++) {
-        const confetti = document.createElement('div');
-        confetti.style.cssText = `
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background: ${colors[Math.floor(Math.random() * colors.length)]};
-            left: ${Math.random() * 100}%;
-            top: -10px;
-            opacity: ${Math.random()};
-            transform: rotate(${Math.random() * 360}deg);
-            animation: confettiFall ${2 + Math.random() * 3}s linear forwards;
-            z-index: 9999;
-        `;
-        document.body.appendChild(confetti);
-        
-        setTimeout(() => confetti.remove(), 5000);
-    }
-}
-
-// Add confetti animation to head if not exists
-if (!document.querySelector('#confetti-style')) {
-    const style = document.createElement('style');
-    style.id = 'confetti-style';
-    style.textContent = `
-        @keyframes confettiFall {
-            to {
-                transform: translateY(100vh) rotate(720deg);
-                opacity: 0;
-            }
-        }
-        @keyframes flyAway {
-            to {
-                transform: translate(200px, -500px) rotate(360deg);
-                opacity: 0;
-            }
-        }
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-    `;
-    document.head.appendChild(style);
-}
-
-// === DYNAMIC YEAR === 
-const yearElements = document.querySelectorAll('.current-year');
-const currentYear = new Date().getFullYear();
-yearElements.forEach(element => {
-    element.textContent = currentYear;
-});
 
 // === PERFORMANCE OPTIMIZATION === 
 // Debounce function for scroll events
@@ -352,57 +260,117 @@ const optimizedScroll = debounce(() => {
 
 window.addEventListener('scroll', optimizedScroll);
 
-// === ANALYTICS EVENTS (Optional) === 
-// Track project card clicks
-document.querySelectorAll('.project-card').forEach(card => {
-    card.addEventListener('click', () => {
-        const projectTitle = card.querySelector('.project-title')?.textContent;
-        console.log('Project viewed:', projectTitle);
-        // Add your analytics tracking here
-        // gtag('event', 'project_view', { project_name: projectTitle });
+// === LAZY LOADING IMAGES === 
+const lazyImages = document.querySelectorAll('img[data-src]');
+if (lazyImages.length > 0) {
+    const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+                imageObserver.unobserve(img);
+            }
+        });
     });
-});
 
-// Track contact card clicks
-document.querySelectorAll('.contact-card').forEach(card => {
-    card.addEventListener('click', () => {
-        const contactMethod = card.querySelector('.contact-title')?.textContent;
-        console.log('Contact method clicked:', contactMethod);
-        // Add your analytics tracking here
-        // gtag('event', 'contact_click', { method: contactMethod });
-    });
-});
-
-// === FORM HANDLING (for future contact form) === 
-function handleContactForm(event) {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const data = Object.fromEntries(formData);
-    
-    console.log('Form submitted:', data);
-    // Add your form submission logic here
-    
-    alert('Mesajınız başarıyla gönderildi! En kısa sürede dönüş yapacağım. 📧');
-    event.target.reset();
+    lazyImages.forEach(img => imageObserver.observe(img));
 }
 
-// === LAZY LOADING IMAGES (for future implementation) === 
-const lazyImages = document.querySelectorAll('img[data-src]');
-const imageObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const img = entry.target;
-            img.src = img.dataset.src;
-            img.removeAttribute('data-src');
-            imageObserver.unobserve(img);
+// === FORM VALIDATION === 
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+}
+
+function validatePhone(phone) {
+    const re = /^[\d\s\-\+\(\)]+$/;
+    return re.test(phone) && phone.length >= 10;
+}
+
+// === ACCESSIBILITY IMPROVEMENTS === 
+// Keyboard navigation for project cards
+document.querySelectorAll('.project-card').forEach(card => {
+    card.setAttribute('tabindex', '0');
+    card.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            this.click();
         }
     });
 });
 
-lazyImages.forEach(img => imageObserver.observe(img));
+// Skip to content link
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab' && !document.querySelector('.skip-to-content')) {
+        const skipLink = document.createElement('a');
+        skipLink.href = '#home';
+        skipLink.className = 'skip-to-content';
+        skipLink.textContent = 'Ana içeriğe geç';
+        skipLink.style.cssText = `
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--primary);
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            text-decoration: none;
+        `;
+        skipLink.addEventListener('focus', () => {
+            skipLink.style.top = '0';
+        });
+        skipLink.addEventListener('blur', () => {
+            skipLink.style.top = '-40px';
+        });
+        document.body.insertBefore(skipLink, document.body.firstChild);
+    }
+});
+
+// === PRINT FUNCTIONALITY === 
+window.addEventListener('beforeprint', () => {
+    document.body.classList.add('printing');
+});
+
+window.addEventListener('afterprint', () => {
+    document.body.classList.remove('printing');
+});
+
+// === ERROR HANDLING === 
+window.addEventListener('error', (e) => {
+    console.error('An error occurred:', e.error);
+});
 
 // === INITIALIZE === 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🚀 Betülay Kaba Portfolio - Ready!');
-    console.log('💡 Hint: Try the Konami Code! (↑↑↓↓←→←→BA)');
+    console.log('Betülay Kaba Portfolio - Loaded Successfully');
+    
+    // Check for required elements
+    const requiredElements = ['navbar', 'hero', 'projects', 'skills', 'contact'];
+    requiredElements.forEach(id => {
+        if (!document.getElementById(id) && !document.querySelector(`.${id}`)) {
+            console.warn(`Required element missing: ${id}`);
+        }
+    });
+    
+    // Initialize AOS or other libraries if needed
+    if (typeof AOS !== 'undefined') {
+        AOS.init();
+    }
 });
+
+// === COOKIE CONSENT (if needed) === 
+function checkCookieConsent() {
+    if (!localStorage.getItem('cookieConsent')) {
+        // Show cookie consent banner if needed
+    }
+}
+
+// === GOOGLE ANALYTICS (Optional) === 
+// Uncomment and add your GA ID
+/*
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'GA_MEASUREMENT_ID');
+*/
