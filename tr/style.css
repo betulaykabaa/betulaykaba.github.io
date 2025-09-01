@@ -1,846 +1,376 @@
 /* ===================================
-   BETÜLAY KABA PORTFOLIO - STYLE.CSS
+   BETÜLAY KABA PORTFOLIO - SCRIPT.JS
+   PROFESSIONAL VERSION
    =================================== */
 
-/* === ROOT VARIABLES === */
-:root {
-    --primary: #2563eb;     
-    --accent: #dc2626;        
-    --dark: #111827;         
-    --darker: #030712;         
-    --light: #ffffff;
-    --gray: #6b7280;         
-    --light-gray: #f3f4f6;     
-    --border: #e5e7eb;
-    --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-}
-
-/* === RESET & BASE === */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-body {
-    font-family: var(--font-main);
-    background: #ffffff;       
-    color: var(--dark);        
-    overflow-x: hidden;
-    line-height: 1.6;
-    font-size: 16px;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-    transition: var(--transition);
-}
-
-ul {
-    list-style: none;
-    padding: 0;
-}
-
-/* === ANIMATED BACKGROUND === */
-.bg-animation {
-    display: none;
-}
-
-/* === LOADING SCREEN === */
-.loader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #ffffff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    animation: fadeOut 0.5s 1s forwards;
-}
-
-.loader-text {
-    font-size: 1.5rem;
-    color: var(--primary);
-    font-weight: 600;
-}
-
-@keyframes fadeOut {
-    to {
-        opacity: 0;
-        visibility: hidden;
-    }
-}
-
-/* === NAVIGATION === */
-nav {
-    position: fixed;
-    width: 100%;
-    top: 0;
-    padding: 15px 50px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    z-index: 1000;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: var(--transition);
-    border-bottom: 1px solid var(--border);
-}
-
-nav.scrolled {
-    padding: 10px 50px;
-    box-shadow: var(--shadow);
-}
-
-.logo {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--primary);
-    letter-spacing: -0.5px;
-}
-
-.nav-links {
-    display: flex;
-    gap: 40px;
-}
-
-.nav-links a {
-    position: relative;
-    font-weight: 500;
-    color: var(--gray);
-    font-size: 15px;
-    letter-spacing: 0.3px;
-}
-
-.nav-links a:hover {
-    color: var(--primary);
-}
-
-.nav-links a::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: var(--primary);
-    transition: width 0.3s;
-}
-
-.nav-links a:hover::after {
-    width: 100%;
-}
-
-/* Mobile Menu Toggle */
-.mobile-menu-toggle {
-    display: none;
-    flex-direction: column;
-    gap: 4px;
-    cursor: pointer;
-}
-
-.mobile-menu-toggle span {
-    width: 25px;
-    height: 2px;
-    background: var(--dark);
-    transition: var(--transition);
-}
-
-.mobile-menu {
-    display: none;
-    position: fixed;
-    top: 65px;
-    left: 0;
-    right: 0;
-    background: white;
-    padding: 20px;
-    z-index: 999;
-    box-shadow: var(--shadow);
-}
-
-.mobile-menu.active {
-    display: block;
-}
-
-.mobile-menu-item {
-    display: block;
-    padding: 15px;
-    border-bottom: 1px solid var(--border);
-    transition: var(--transition);
-    color: var(--gray);
-}
-
-.mobile-menu-item:hover {
-    color: var(--primary);
-    padding-left: 25px;
-}
-
-/* === HERO SECTION === */
-.hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    position: relative;
-    padding: 0 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-}
-
-.floating {
-    animation: none;  /* Animasyon kaldırıldı - daha profesyonel */
-}
-
-.hero h1 {
-    font-size: clamp(2.5rem, 5vw, 3.5rem);
-    margin-bottom: 20px;
-    font-weight: 700;
-    letter-spacing: -1px;
-}
-
-.gradient-text {
-    color: white;
-}
-
-.typewriter {
-    font-size: clamp(1.2rem, 3vw, 1.5rem);
-    color: rgba(255, 255, 255, 0.9);
-    margin: 20px 0;
-    height: 40px;
-    font-weight: 400;
-}
-
-.hero-subtitle {
-    font-size: 1.1rem;
-    margin-top: 20px;
-    opacity: 0.9;
-    font-weight: 400;
-}
-
-/* === BUTTONS === */
-.cta-buttons {
-    display: flex;
-    gap: 20px;
-    margin-top: 40px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.btn {
-    padding: 12px 32px;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: var(--transition);
-    display: inline-block;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-}
-
-.btn-primary {
-    background: white;
-    color: var(--primary);
-}
-
-.btn-secondary {
-    background: transparent;
-    color: white;
-    border: 2px solid white;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-/* === STATS SECTION === */
-.stats {
-    padding: 80px 50px;
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    gap: 30px;
-    background: var(--light-gray);
-}
-
-.stat-card {
-    text-align: center;
-    padding: 30px;
-    background: white;
-    border-radius: 12px;
-    transition: var(--transition);
-    min-width: 200px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
-
-.stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow);
-}
-
-.stat-number {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--primary);
-}
-
-.stat-label {
-    margin-top: 10px;
-    font-size: 0.95rem;
-    color: var(--gray);
-    font-weight: 500;
-}
-
-/* === EXPERIENCE SECTION === */
-.experience {
-    padding: 80px 50px;
-    background: white;
-}
-
-.section-title {
-    text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 50px;
-    font-weight: 700;
-    color: var(--dark);
-}
-
-/* Timeline */
-.timeline {
-    position: relative;
-    max-width: 1000px;
-    margin: 50px auto;
-    padding: 20px 0;
-}
-
-.timeline::after {
-    content: '';
-    position: absolute;
-    width: 2px;
-    background: var(--border);
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    margin-left: -1px;
-}
-
-.timeline-item {
-    padding: 10px 40px;
-    position: relative;
-    width: 50%;
-}
-
-.timeline-item:nth-child(odd) {
-    left: 0;
-    text-align: right;
-}
-
-.timeline-item:nth-child(even) {
-    left: 50%;
-}
-
-.timeline-date {
-    background: var(--primary);
-    color: white;
-    padding: 8px 16px;
-    border-radius: 6px;
-    display: inline-block;
-    font-weight: 600;
-    margin-bottom: 15px;
-    font-size: 0.9rem;
-}
-
-.timeline-content {
-    padding: 25px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    transition: var(--transition);
-    border: 1px solid var(--border);
-}
-
-.timeline-content:hover {
-    transform: scale(1.02);
-    box-shadow: var(--shadow);
-}
-
-.timeline-content h3 {
-    color: var(--dark);
-    margin-bottom: 10px;
-    font-size: 1.3rem;
-    font-weight: 600;
-}
-
-.timeline-content h4 {
-    color: var(--primary);
-    margin: 10px 0;
-    font-size: 1rem;
-    font-weight: 500;
-}
-
-.timeline-content ul {
-    line-height: 1.8;
-    color: var(--gray);
-    list-style: none;
-    padding-left: 0;
-}
-
-.timeline-content li {
-    position: relative;
-    padding-left: 20px;
-    margin: 8px 0;
-}
-
-.timeline-content li::before {
-    content: "▸";
-    position: absolute;
-    left: 0;
-    color: var(--primary);
-}
-
-.timeline-item::after {
-    content: '';
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    background: white;
-    border: 3px solid var(--primary);
-    border-radius: 50%;
-    top: 40px;
-    z-index: 1;
-}
-
-.timeline-item:nth-child(odd)::after {
-    right: -7px;
-}
-
-.timeline-item:nth-child(even)::after {
-    left: -7px;
-}
-
-/* === PROJECTS SECTION === */
-.projects {
-    padding: 80px 50px;
-    background: var(--light-gray);
-}
-
-.project-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 30px;
-    margin-top: 50px;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.project-card {
-    background: white;
-    border-radius: 12px;
-    padding: 30px;
-    transition: var(--transition);
-    cursor: pointer;
-    position: relative;
-    border: 1px solid var(--border);
-}
-
-.project-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow);
-    border-color: var(--primary);
-}
-
-.project-card.coming-soon {
-    border: 2px dashed var(--border);
-    opacity: 0.6;
-}
-
-.project-card::after {
-    content: 'Detaylar için tıkla';
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    font-size: 0.75rem;
-    color: var(--gray);
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.project-card:hover::after {
-    opacity: 1;
-}
-
-.badge-special {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: var(--primary);
-    color: white;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-weight: 600;
-    font-size: 0.8rem;
-}
-
-.project-title {
-    font-size: 1.4rem;
-    margin-bottom: 15px;
-    color: var(--dark);
-    font-weight: 600;
-}
-
-.project-description {
-    margin-bottom: 20px;
-    color: var(--gray);
-    line-height: 1.6;
-}
-
-.difficulty {
-    display: flex;
-    gap: 3px;
-    margin-bottom: 15px;
-}
-
-.star {
-    color: #fbbf24;
-    font-size: 1rem;
-}
-
-.tech-stack {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 15px;
-}
-
-.tech-badge {
-    background: var(--light-gray);
-    padding: 4px 12px;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    color: var(--gray);
-    border: 1px solid var(--border);
-    transition: var(--transition);
-}
-
-.tech-badge:hover {
-    background: var(--primary);
-    color: white;
-    border-color: var(--primary);
-}
-
-/* Project Details */
-.project-detail {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.5s ease-out;
-    margin-top: 20px;
-}
-
-.project-detail.active {
-    max-height: 1000px;
-}
-
-.detail-content {
-    padding: 20px;
-    background: var(--light-gray);
-    border-radius: 8px;
-    margin-top: 10px;
-    border-left: 3px solid var(--primary);
-}
-
-.detail-content h4 {
-    color: var(--dark);
-    margin-bottom: 15px;
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-.detail-content p {
-    margin: 10px 0;
-    line-height: 1.6;
-    color: var(--gray);
-}
-
-.detail-content ul {
-    margin: 10px 0;
-    padding-left: 20px;
-}
-
-.detail-content li {
-    margin: 8px 0;
-    color: var(--gray);
-}
-
-.detail-content strong {
-    color: var(--dark);
-}
-
-/* === SKILLS SECTION === */
-.skills {
-    padding: 80px 50px;
-    background: white;
-}
-
-.skill-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 30px;
-    margin-top: 50px;
-    max-width: 1000px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.skill-item {
-    text-align: center;
-    padding: 25px;
-    background: var(--light-gray);
-    border-radius: 12px;
-    transition: var(--transition);
-}
-
-.skill-item:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow);
-}
-
-.skill-name {
-    font-size: 1rem;
-    color: var(--dark);
-    font-weight: 600;
-    margin-bottom: 15px;
-}
-
-.skill-level {
-    margin-top: 10px;
-    height: 8px;
-    background: var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.skill-progress {
-    height: 100%;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-    border-radius: 10px;
-    width: 0;
-    animation: fillProgress 2s ease-out forwards;
-}
-
-/* === CERTIFICATIONS SECTION === */
-.certifications {
-    padding: 80px 50px;
-    background: var(--light-gray);
-}
-
-.cert-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 25px;
-    margin-top: 50px;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.cert-card {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    border-left: 4px solid var(--primary);
-    transition: var(--transition);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
-
-.cert-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow);
-}
-
-.cert-title {
-    color: var(--dark);
-    font-weight: 600;
-    margin-bottom: 8px;
-    font-size: 1.05rem;
-}
-
-.cert-issuer {
-    color: var(--gray);
-    font-size: 0.9rem;
-}
-
-/* === CONTACT SECTION === */
-.contact {
-    padding: 80px 50px;
-    text-align: center;
-    background: white;
-}
-
-.contact-subtitle {
-    font-size: 1.1rem;
-    color: var(--gray);
-    margin-bottom: 40px;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.contact-options {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap;
-    margin-top: 50px;
-}
-
-.contact-card {
-    padding: 30px;
-    background: var(--light-gray);
-    border-radius: 12px;
-    transition: var(--transition);
-    min-width: 250px;
-    text-decoration: none;
-    color: var(--dark);
-}
-
-.contact-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow);
-}
-
-.contact-title {
-    font-size: 1.1rem;
-    color: var(--dark);
-    margin-bottom: 10px;
-    font-weight: 600;
-}
-
-.contact-card p {
-    color: var(--gray);
-    font-size: 0.95rem;
-}
-
-/* === FOOTER === */
-footer {
-    padding: 40px;
-    text-align: center;
-    background: var(--dark);
-    color: white;
-}
-
-.social-links {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 20px;
-}
-
-.social-link {
-    padding: 10px 15px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: var(--transition);
-    color: white;
-    font-size: 0.9rem;
-}
-
-.social-link:hover {
-    background: var(--primary);
-    transform: translateY(-3px);
-}
-
-/* === EASTER EGG - REMOVED === */
-.hidden-drone {
-    display: none;
-}
-
-/* === RESPONSIVE DESIGN === */
-@media (max-width: 768px) {
-    nav {
-        padding: 15px 20px;
-    }
-
-    .nav-links {
-        display: none;
-    }
-
-    .mobile-menu-toggle {
-        display: flex;
-    }
-
-    .hero h1 {
-        font-size: 2rem;
-    }
-
-    .stats, .projects, .skills, .contact, .experience, .certifications {
-        padding: 50px 20px;
-    }
-
-    .project-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .timeline::after {
-        left: 31px;
+// === DOM ELEMENTS === 
+const loader = document.getElementById('loader');
+const navbar = document.getElementById('navbar');
+const typewriter = document.getElementById('typewriter');
+const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+const mobileMenu = document.getElementById('mobileMenu');
+const coffeeCard = document.getElementById('coffeeCard');
+
+// === LOADING SCREEN === 
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        if (loader) {
+            loader.style.display = 'none';
+        }
+        document.body.style.overflow = 'visible';
+    }, 500); // Daha hızlı yükleme
+});
+
+// === NAVBAR SCROLL EFFECT === 
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+    const currentScroll = window.pageYOffset;
+    
+    // Add scrolled class for navbar styling
+    if (currentScroll > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
     }
     
-    .timeline-item {
-        width: 100%;
-        padding-left: 70px;
-        padding-right: 25px;
-        left: 0 !important;
-        text-align: left !important;
+    lastScroll = currentScroll;
+});
+
+// === MOBILE MENU === 
+if (mobileMenuToggle && mobileMenu) {
+    mobileMenuToggle.addEventListener('click', () => {
+        mobileMenu.classList.toggle('active');
+        mobileMenuToggle.classList.toggle('active');
+    });
+
+    // Close mobile menu when clicking on a link
+    document.querySelectorAll('.mobile-menu-item').forEach(item => {
+        item.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            mobileMenuToggle.classList.remove('active');
+        });
+    });
+}
+
+// === TYPEWRITER EFFECT (Simplified) === 
+const phrases = [
+    "Biyomedikal Mühendis",
+    "Kalite Yönetim Uzmanı",
+    "MDR Regülasyon Eksperi",
+    "ISO 9001 İç Denetçi"
+];
+
+let phraseIndex = 0;
+let charIndex = 0;
+let isDeleting = false;
+
+function typeEffect() {
+    if (!typewriter) return;
+    
+    const currentPhrase = phrases[phraseIndex];
+    
+    if (isDeleting) {
+        typewriter.textContent = currentPhrase.substring(0, charIndex - 1);
+        charIndex--;
+    } else {
+        typewriter.textContent = currentPhrase.substring(0, charIndex + 1);
+        charIndex++;
     }
     
-    .timeline-item::after {
-        left: 24px !important;
-    }
-
-    .skill-container {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    }
-
-    .cert-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .contact-options {
-        flex-direction: column;
-        align-items: center;
+    if (!isDeleting && charIndex === currentPhrase.length) {
+        isDeleting = true;
+        setTimeout(typeEffect, 2000);
+    } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        phraseIndex = (phraseIndex + 1) % phrases.length;
+        setTimeout(typeEffect, 300);
+    } else {
+        setTimeout(typeEffect, isDeleting ? 30 : 70);
     }
 }
 
-/* === CUSTOM SCROLLBAR === */
-::-webkit-scrollbar {
-    width: 10px;
+// Start typewriter effect
+if (typewriter) {
+    typeEffect();
 }
 
-::-webkit-scrollbar-track {
-    background: var(--light-gray);
+// === SMOOTH SCROLLING === 
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const target = document.querySelector(targetId);
+        
+        if (target) {
+            const offsetTop = target.offsetTop - 80; // Navbar height compensation
+            window.scrollTo({
+                top: offsetTop,
+                behavior: 'smooth'
+            });
+        }
+    });
+});
+
+// === STATS COUNTER ANIMATION === 
+const observerOptions = {
+    threshold: 0.5,
+    rootMargin: '0px 0px -100px 0px'
+};
+
+// Stats counter
+const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const statNumbers = entry.target.querySelectorAll('.stat-number');
+            statNumbers.forEach(stat => {
+                const target = parseInt(stat.getAttribute('data-target'));
+                if (target) {
+                    let current = 0;
+                    const increment = target / 30;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            stat.textContent = target;
+                            clearInterval(timer);
+                        } else {
+                            stat.textContent = Math.floor(current);
+                        }
+                    }, 40);
+                }
+            });
+            statsObserver.unobserve(entry.target);
+        }
+    });
+}, observerOptions);
+
+// Observe stats section
+const statsSection = document.querySelector('.stats');
+if (statsSection) {
+    statsObserver.observe(statsSection);
 }
 
-::-webkit-scrollbar-thumb {
-    background: var(--gray);
-    border-radius: 5px;
+// === SKILLS PROGRESS ANIMATION === 
+const skillsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const progressBars = entry.target.querySelectorAll('.skill-progress');
+            progressBars.forEach((bar, index) => {
+                const width = bar.getAttribute('data-width');
+                setTimeout(() => {
+                    bar.style.width = width + '%';
+                }, index * 50);
+            });
+            skillsObserver.unobserve(entry.target);
+        }
+    });
+}, observerOptions);
+
+// Observe skills section
+const skillsSection = document.querySelector('.skills');
+if (skillsSection) {
+    skillsObserver.observe(skillsSection);
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: var(--primary);
+// === PROJECT CARDS INTERACTION === 
+function toggleProjectDetail(projectId) {
+    const detail = document.getElementById(projectId + '-detail');
+    if (!detail) return;
+    
+    const card = detail.parentElement;
+    const allDetails = document.querySelectorAll('.project-detail');
+    const allCards = document.querySelectorAll('.project-card');
+    
+    // Close all other details
+    allDetails.forEach(d => {
+        if (d.id !== projectId + '-detail') {
+            d.classList.remove('active');
+        }
+    });
+    
+    allCards.forEach(c => {
+        if (c !== card) {
+            c.classList.remove('expanded');
+        }
+    });
+    
+    // Toggle current detail
+    detail.classList.toggle('active');
+    card.classList.toggle('expanded');
 }
+
+// Add click event to project cards
+document.querySelectorAll('.project-card').forEach(card => {
+    card.addEventListener('click', function(e) {
+        // Don't toggle if clicking on the coming soon card
+        if (this.classList.contains('coming-soon')) {
+            return;
+        }
+        
+        const projectId = this.getAttribute('data-project');
+        if (projectId) {
+            toggleProjectDetail(projectId);
+        }
+    });
+});
+
+// === FADE IN ANIMATION ON SCROLL === 
+const fadeElements = document.querySelectorAll('.timeline-item, .project-card, .skill-item, .cert-card');
+
+const fadeObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        }
+    });
+}, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+});
+
+fadeElements.forEach(element => {
+    element.classList.add('fade-in');
+    fadeObserver.observe(element);
+});
+
+// === COFFEE CARD CLICK === 
+if (coffeeCard) {
+    coffeeCard.addEventListener('click', () => {
+        window.location.href = 'mailto:betulaykaba.work@gmail.com?subject=Kahve Sohbeti';
+    });
+}
+
+// === PERFORMANCE OPTIMIZATION === 
+// Debounce function for scroll events
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Optimized scroll handler
+const optimizedScroll = debounce(() => {
+    // Handle any scroll-based animations here
+}, 100);
+
+window.addEventListener('scroll', optimizedScroll);
+
+// === LAZY LOADING IMAGES === 
+const lazyImages = document.querySelectorAll('img[data-src]');
+if (lazyImages.length > 0) {
+    const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+                imageObserver.unobserve(img);
+            }
+        });
+    });
+
+    lazyImages.forEach(img => imageObserver.observe(img));
+}
+
+// === FORM VALIDATION === 
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+}
+
+function validatePhone(phone) {
+    const re = /^[\d\s\-\+\(\)]+$/;
+    return re.test(phone) && phone.length >= 10;
+}
+
+// === ACCESSIBILITY IMPROVEMENTS === 
+// Keyboard navigation for project cards
+document.querySelectorAll('.project-card').forEach(card => {
+    card.setAttribute('tabindex', '0');
+    card.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            this.click();
+        }
+    });
+});
+
+// Skip to content link
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab' && !document.querySelector('.skip-to-content')) {
+        const skipLink = document.createElement('a');
+        skipLink.href = '#home';
+        skipLink.className = 'skip-to-content';
+        skipLink.textContent = 'Ana içeriğe geç';
+        skipLink.style.cssText = `
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--primary);
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            text-decoration: none;
+        `;
+        skipLink.addEventListener('focus', () => {
+            skipLink.style.top = '0';
+        });
+        skipLink.addEventListener('blur', () => {
+            skipLink.style.top = '-40px';
+        });
+        document.body.insertBefore(skipLink, document.body.firstChild);
+    }
+});
+
+// === PRINT FUNCTIONALITY === 
+window.addEventListener('beforeprint', () => {
+    document.body.classList.add('printing');
+});
+
+window.addEventListener('afterprint', () => {
+    document.body.classList.remove('printing');
+});
+
+// === ERROR HANDLING === 
+window.addEventListener('error', (e) => {
+    console.error('An error occurred:', e.error);
+});
+
+// === INITIALIZE === 
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Betülay Kaba Portfolio - Loaded Successfully');
+    
+    // Check for required elements
+    const requiredElements = ['navbar', 'hero', 'projects', 'skills', 'contact'];
+    requiredElements.forEach(id => {
+        if (!document.getElementById(id) && !document.querySelector(`.${id}`)) {
+            console.warn(`Required element missing: ${id}`);
+        }
+    });
+    
+    // Initialize AOS or other libraries if needed
+    if (typeof AOS !== 'undefined') {
+        AOS.init();
+    }
+});
+
+// === COOKIE CONSENT (if needed) === 
+function checkCookieConsent() {
+    if (!localStorage.getItem('cookieConsent')) {
+        // Show cookie consent banner if needed
+    }
+}
+
+// === GOOGLE ANALYTICS (Optional) === 
+// Uncomment and add your GA ID
+/*
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'GA_MEASUREMENT_ID');
+*/
