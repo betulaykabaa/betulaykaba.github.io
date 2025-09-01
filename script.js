@@ -56,7 +56,7 @@ document.querySelectorAll('.mobile-menu-item').forEach(item => {
 
 // === TYPEWRITER EFFECT === 
 const phrases = [
-    "Biyomedikal Mühendis 🧬",
+    "Biyomedikal Mühendisi 🧬",
     "Kalite Yönetim Uzmanı 📋",
     "MDR Regülasyon Eksperi 📑",
     "3 Projede Ekip Lideri 👑",
