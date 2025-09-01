@@ -375,11 +375,7 @@ nav.scrolled {
 }
 
 .section-title::after {
-    content: '🚀';
-    position: absolute;
-    top: -20px;
-    right: calc(50% - 20px);
-    animation: rocket 3s ease-in-out infinite;
+    display: none;
 }
 
 @keyframes rocket {
