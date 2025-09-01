@@ -1,239 +1,510 @@
-/* ===================================
-   BETÜLAY KABA PORTFOLIO - SCRIPT.JS
-   PROFESSIONAL VERSION
-   =================================== */
+/* =====================================
+   BETÜLAY KABA - PROFESSIONAL PORTFOLIO
+   JavaScript with Fixed Click Events
+   ===================================== */
 
-// === DOM ELEMENTS === 
-const loader = document.getElementById('loader');
-const navbar = document.getElementById('navbar');
-const typewriter = document.getElementById('typewriter');
-const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-const mobileMenu = document.getElementById('mobileMenu');
-const coffeeCard = document.getElementById('coffeeCard');
+// === GLOBAL VARIABLES ===
+let isScrolling = false;
+let lastScrollTop = 0;
 
-// === LOADING SCREEN === 
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        if (loader) {
-            loader.style.display = 'none';
-        }
-        document.body.style.overflow = 'visible';
-    }, 500); // Daha hızlı yükleme
+// === DOM CONTENT LOADED ===
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all functions
+    initPreloader();
+    initNavigation();
+    initTypewriter();
+    initScrollEffects();
+    initAnimations();
+    initProjects();
+    initSkills();
+    initContactForm();
+    initBackToTop();
+    initAOS();
+    
+    console.log('✅ Portfolio initialized successfully!');
 });
 
-// Mouse Parallax Effect
-document.addEventListener('mousemove', (e) => {
-    const hero = document.querySelector('.hero');
-    if (!hero) return;
-    
-    const mouseX = e.clientX / window.innerWidth;
-    const mouseY = e.clientY / window.innerHeight;
-    
-    const floating = hero.querySelector('.floating');
-    if (floating) {
-        floating.style.transform = `translate(${mouseX * 20 - 10}px, ${mouseY * 20 - 10}px)`;
+// === PRELOADER ===
+function initPreloader() {
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                preloader.classList.add('hide');
+                document.body.style.overflow = 'visible';
+            }, 800);
+        });
     }
-});
+}
 
-// === NAVBAR SCROLL EFFECT === 
-let lastScroll = 0;
-window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
+// === NAVIGATION ===
+function initNavigation() {
+    const navbar = document.getElementById('navbar');
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.querySelector('.nav-menu');
+    const navLinks = document.querySelectorAll('.nav-link');
     
-    // Add scrolled class for navbar styling
-    if (currentScroll > 50) {
-        navbar.classList.add('scrolled');
-    } else {
-        navbar.classList.remove('scrolled');
+    // Hamburger menu toggle
+    if (hamburger && navMenu) {
+        hamburger.addEventListener('click', function() {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+        
+        // Close menu when clicking on a link
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
     }
     
-    lastScroll = currentScroll;
-});
-
-// === MOBILE MENU === 
-if (mobileMenuToggle && mobileMenu) {
-    mobileMenuToggle.addEventListener('click', () => {
-        mobileMenu.classList.toggle('active');
-        mobileMenuToggle.classList.toggle('active');
-    });
-
-    // Close mobile menu when clicking on a link
-    document.querySelectorAll('.mobile-menu-item').forEach(item => {
-        item.addEventListener('click', () => {
-            mobileMenu.classList.remove('active');
-            mobileMenuToggle.classList.remove('active');
+    // Smooth scrolling for navigation links
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetSection = document.querySelector(targetId);
+            
+            if (targetSection) {
+                const offsetTop = targetSection.offsetTop - 80;
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
+            }
         });
     });
+    
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+        if (navbar) {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        }
+    });
 }
 
-// === TYPEWRITER EFFECT (Simplified) === 
-const phrases = [
-    "Biyomedikal Mühendis",
-    "Kalite Yönetim Uzmanı",
-    "MDR Regülasyon Eksperi",
-    "ISO 9001 İç Denetçi"
-];
-
-let phraseIndex = 0;
-let charIndex = 0;
-let isDeleting = false;
-
-function typeEffect() {
-    if (!typewriter) return;
+// === TYPEWRITER EFFECT ===
+function initTypewriter() {
+    const typedText = document.getElementById('typed-text');
+    if (!typedText) return;
     
-    const currentPhrase = phrases[phraseIndex];
+    const roles = [
+        'Biyomedikal Mühendis',
+        'Kalite Yönetim Uzmanı',
+        'MDR Regülasyon Eksperi',
+        'ISO 9001 İç Denetçi',
+        'Ürün ve Kalite Müdürü'
+    ];
     
-    if (isDeleting) {
-        typewriter.textContent = currentPhrase.substring(0, charIndex - 1);
-        charIndex--;
-    } else {
-        typewriter.textContent = currentPhrase.substring(0, charIndex + 1);
-        charIndex++;
-    }
+    let roleIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    let typingSpeed = 100;
     
-    if (!isDeleting && charIndex === currentPhrase.length) {
-        isDeleting = true;
-        setTimeout(typeEffect, 2000);
-    } else if (isDeleting && charIndex === 0) {
-        isDeleting = false;
-        phraseIndex = (phraseIndex + 1) % phrases.length;
-        setTimeout(typeEffect, 300);
-    } else {
-        setTimeout(typeEffect, isDeleting ? 30 : 70);
-    }
-}
-
-// Start typewriter effect
-if (typewriter) {
-    typeEffect();
-}
-
-// === SMOOTH SCROLLING === 
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const targetId = this.getAttribute('href');
-        const target = document.querySelector(targetId);
+    function type() {
+        const currentRole = roles[roleIndex];
         
-        if (target) {
-            const offsetTop = target.offsetTop - 80; // Navbar height compensation
+        if (isDeleting) {
+            typedText.textContent = currentRole.substring(0, charIndex - 1);
+            charIndex--;
+            typingSpeed = 50;
+        } else {
+            typedText.textContent = currentRole.substring(0, charIndex + 1);
+            charIndex++;
+            typingSpeed = 100;
+        }
+        
+        if (!isDeleting && charIndex === currentRole.length) {
+            isDeleting = true;
+            typingSpeed = 2000; // Pause at end
+        } else if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            roleIndex = (roleIndex + 1) % roles.length;
+            typingSpeed = 500; // Pause before new word
+        }
+        
+        setTimeout(type, typingSpeed);
+    }
+    
+    type();
+}
+
+// === SCROLL EFFECTS ===
+function initScrollEffects() {
+    const progressBar = document.getElementById('progressBar');
+    
+    window.addEventListener('scroll', () => {
+        // Update progress bar
+        if (progressBar) {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollProgress = (scrollTop / scrollHeight) * 100;
+            progressBar.style.width = scrollProgress + '%';
+        }
+    });
+}
+
+// === ANIMATIONS ===
+function initAnimations() {
+    // Animate stats numbers
+    const observerOptions = {
+        threshold: 0.5,
+        rootMargin: '0px'
+    };
+    
+    const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const statNumbers = entry.target.querySelectorAll('.stat-number');
+                statNumbers.forEach(stat => {
+                    const target = parseInt(stat.getAttribute('data-count'));
+                    if (target) {
+                        animateNumber(stat, target);
+                    }
+                });
+                statsObserver.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    
+    // Observe stats section
+    const statsSection = document.querySelector('.about-stats');
+    if (statsSection) {
+        statsObserver.observe(statsSection);
+    }
+}
+
+// === NUMBER ANIMATION ===
+function animateNumber(element, target) {
+    let current = 0;
+    const increment = target / 50;
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+            element.textContent = target;
+            clearInterval(timer);
+        } else {
+            element.textContent = Math.floor(current);
+        }
+    }, 30);
+}
+
+// === PROJECTS ===
+function initProjects() {
+    // Make project buttons work
+    window.openProjectModal = function(projectId) {
+        const modal = document.getElementById('projectModal');
+        const modalContent = document.getElementById('modalContent');
+        
+        if (!modal || !modalContent) return;
+        
+        // Project details data
+        const projectDetails = {
+            drone: {
+                title: 'Otonom Kargo Drone',
+                year: '2022',
+                description: `
+                    <h3>🚁 Proje Detayları</h3>
+                    <p><strong>Otonom Kargo Taşımacılığı Projesi</strong></p>
+                    <h4>📋 Özellikler:</h4>
+                    <ul>
+                        <li>✅ Önceden belirlenmiş rota optimizasyonu</li>
+                        <li>✅ Maksimum yük kapasitesi: 3000 gram</li>
+                        <li>✅ Kargo taşımacılığı için özel tasarım</li>
+                        <li>✅ Otonom navigasyon sistemi</li>
+                        <li>✅ Gerçek zamanlı konum takibi</li>
+                        <li>✅ Güvenli iniş ve kalkış protokolleri</li>
+                    </ul>
+                    <h4>🔧 Teknolojiler:</h4>
+                    <p>Python ile rota optimizasyonu algoritmaları, MATLAB ile simülasyonlar, 
+                    makine öğrenmesi ile engel tespiti ve kaçınma sistemleri.</p>
+                    <h4>💡 İnovasyon:</h4>
+                    <p>Kentsel alanlarda hızlı ve verimli teslimat için tasarlanan bu sistem, 
+                    lojistik sektöründe devrim yaratmayı hedefliyor.</p>
+                `
+            },
+            sleep: {
+                title: 'Uyku Evresi Sınıflandırma',
+                year: '2021',
+                description: `
+                    <h3>😴 Bitirme Projesi</h3>
+                    <p><strong>Makine Öğrenmesi ile Uyku Analizi</strong></p>
+                    <h4>📊 Veri İşleme:</h4>
+                    <ul>
+                        <li>✅ Physiobank ATM veritabanından EEG/EMG sinyalleri</li>
+                        <li>✅ 9 saatlik kayıt, 1079 epoch</li>
+                        <li>✅ Zaman ve frekans domeninde özellik çıkarımı</li>
+                        <li>✅ KNN algoritması ile sınıflandırma</li>
+                        <li>✅ %92 doğruluk oranı</li>
+                    </ul>
+                    <h4>🎯 Başarı:</h4>
+                    <p>Yüksek accuracy ile uyku laboratuvarlarında kullanılabilir düzeyde 
+                    bir sistem geliştirildi. Uyku bozukluklarının tespitinde önemli katkı sağlıyor.</p>
+                `
+            },
+            uav: {
+                title: 'Çok Amaçlı İHA',
+                year: 'TEKNOFEST 2020',
+                description: `
+                    <h3>🚁 TÜBİTAK Destekli Proje</h3>
+                    <p><strong>TEKNOFEST Uluslararası İHA Yarışması</strong></p>
+                    <h4>🏆 Başarılar:</h4>
+                    <ul>
+                        <li>✅ TÜBİTAK Uluslararası İnsansız Hava Aracı Yarışması</li>
+                        <li>✅ Ekip kaptanı olarak proje liderliği</li>
+                        <li>✅ Su taşıma görevini başarıyla gerçekleştirme</li>
+                        <li>✅ Otonom uçuş ve hassas manevra kabiliyeti</li>
+                        <li>✅ TEKNOFEST 2020'de başarılı performans</li>
+                    </ul>
+                    <h4>👥 Liderlik Deneyimi:</h4>
+                    <p>Üniversite takımının kaptanı olarak tüm proje yaşam döngüsünü yönettim. 
+                    15 kişilik ekibin koordinasyonunu sağladım.</p>
+                `
+            },
+            sumo: {
+                title: 'Sumo Yarışma Robotu',
+                year: '2018',
+                description: `
+                    <h3>🤖 Yarışma Robotu Projesi</h3>
+                    <p><strong>Rekabetçi Sumo Robot Tasarımı</strong></p>
+                    <h4>⚙️ Teknik Özellikler:</h4>
+                    <ul>
+                        <li>✅ Arduino Mega mikrodenetleyici</li>
+                        <li>✅ 3D printer ile üretilen dayanıklı şasi</li>
+                        <li>✅ QTR sensörleri ile hassas çizgi algılama</li>
+                        <li>✅ HC-SR04 ultrasonik sensörler (360° kapsama)</li>
+                        <li>✅ Yüksek torklu DC motorlar</li>
+                        <li>✅ Stratejik algoritma geliştirme</li>
+                    </ul>
+                    <h4>🏆 Başarı:</h4>
+                    <p>Üniversite robot yarışmasında finale kalan tasarım! 
+                    Agresif strateji ve dayanıklı mekanik yapı ile rakiplerini yendi.</p>
+                `
+            },
+            power: {
+                title: 'Ayarlanabilir Güç Kaynağı',
+                year: '2017',
+                description: `
+                    <h3>⚡ Elektronik Laboratuvar Projesi</h3>
+                    <p><strong>0-30V Değişken Voltaj Sistemi</strong></p>
+                    <h4>🔌 Ana Bileşenler:</h4>
+                    <ul>
+                        <li>✅ Transformatör: 220V AC → 24V AC</li>
+                        <li>✅ Köprü Diyot: AC → DC dönüşüm</li>
+                        <li>✅ Filtre Kapasitörü (2200μF)</li>
+                        <li>✅ LM317 Voltaj Regülatör</li>
+                        <li>✅ 10-turn Potansiyometre</li>
+                        <li>✅ Dijital Voltmetre</li>
+                    </ul>
+                    <h4>✨ Özellikler:</h4>
+                    <p>Kısa devre koruması, aşırı akım koruması, %1'den düşük ripple oranı. 
+                    Elektronik devreler için güvenilir test ortamı sağlıyor.</p>
+                `
+            }
+        };
+        
+        // Set modal content
+        const project = projectDetails[projectId];
+        if (project) {
+            modalContent.innerHTML = `
+                <h2>${project.title}</h2>
+                <span class="project-year">${project.year}</span>
+                ${project.description}
+            `;
+            
+            // Show modal
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+    };
+    
+    // Close modal function
+    window.closeProjectModal = function() {
+        const modal = document.getElementById('projectModal');
+        if (modal) {
+            modal.classList.remove('show');
+            document.body.style.overflow = 'visible';
+        }
+    };
+    
+    // Close modal when clicking outside
+    const modal = document.getElementById('projectModal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeProjectModal();
+            }
+        });
+    }
+    
+    // Close modal with ESC key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeProjectModal();
+        }
+    });
+}
+
+// === SKILLS ANIMATION ===
+function initSkills() {
+    const observerOptions = {
+        threshold: 0.5,
+        rootMargin: '0px'
+    };
+    
+    const skillsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const progressBars = entry.target.querySelectorAll('.skill-progress');
+                progressBars.forEach((bar, index) => {
+                    const width = bar.getAttribute('data-width');
+                    setTimeout(() => {
+                        bar.style.width = width + '%';
+                    }, index * 100);
+                });
+                skillsObserver.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    
+    // Observe skills section
+    const skillsSection = document.querySelector('.skills');
+    if (skillsSection) {
+        skillsObserver.observe(skillsSection);
+    }
+}
+
+// === CONTACT FORM ===
+function initContactForm() {
+    const contactForm = document.getElementById('contactForm');
+    
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+            
+            // Create mailto link
+            const mailtoLink = `mailto:betulaykaba.work@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Ad: ${name}\nEmail: ${email}\n\nMesaj:\n${message}`)}`;
+            
+            // Open mail client
+            window.location.href = mailtoLink;
+            
+            // Reset form
+            contactForm.reset();
+            
+            // Show success message (optional)
+            showNotification('Mesajınız için teşekkürler! En kısa sürede dönüş yapacağım.');
+        });
+    }
+}
+
+// === NOTIFICATION ===
+function showNotification(message) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <span>${message}</span>
+    `;
+    
+    // Add styles
+    notification.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation: slideInRight 0.5s ease;
+        z-index: 3000;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.5s ease';
+        setTimeout(() => {
+            notification.remove();
+        }, 500);
+    }, 3000);
+}
+
+// === BACK TO TOP ===
+function initBackToTop() {
+    const backToTop = document.getElementById('backToTop');
+    
+    if (backToTop) {
+        // Show/hide button based on scroll
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+        
+        // Scroll to top when clicked
+        backToTop.addEventListener('click', () => {
             window.scrollTo({
-                top: offsetTop,
+                top: 0,
                 behavior: 'smooth'
             });
-        }
-    });
-});
-
-// === STATS COUNTER ANIMATION === 
-const observerOptions = {
-    threshold: 0.5,
-    rootMargin: '0px 0px -100px 0px'
-};
-
-// Stats counter
-const statsObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const statNumbers = entry.target.querySelectorAll('.stat-number');
-            statNumbers.forEach(stat => {
-                const target = parseInt(stat.getAttribute('data-target'));
-                if (target) {
-                    let current = 0;
-                    const increment = target / 30;
-                    const timer = setInterval(() => {
-                        current += increment;
-                        if (current >= target) {
-                            stat.textContent = target;
-                            clearInterval(timer);
-                        } else {
-                            stat.textContent = Math.floor(current);
-                        }
-                    }, 40);
-                }
-            });
-            statsObserver.unobserve(entry.target);
-        }
-    });
-}, observerOptions);
-
-// Observe stats section
-const statsSection = document.querySelector('.stats');
-if (statsSection) {
-    statsObserver.observe(statsSection);
+        });
+    }
 }
 
-// === SKILLS PROGRESS ANIMATION === 
-const skillsObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const progressBars = entry.target.querySelectorAll('.skill-progress');
-            progressBars.forEach((bar, index) => {
-                const width = bar.getAttribute('data-width');
-                setTimeout(() => {
-                    bar.style.width = width + '%';
-                }, index * 50);
-            });
-            skillsObserver.unobserve(entry.target);
-        }
-    });
-}, observerOptions);
-
-// Observe skills section
-const skillsSection = document.querySelector('.skills');
-if (skillsSection) {
-    skillsObserver.observe(skillsSection);
+// === AOS INITIALIZATION ===
+function initAOS() {
+    if (typeof AOS !== 'undefined') {
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100,
+            easing: 'ease-out-cubic'
+        });
+    }
 }
 
-// === PROJECT CARDS INTERACTION === 
-function toggleProjectDetail(projectId) {
-    const detail = document.getElementById(projectId + '-detail');
-    if (!detail) return;
+// === PARALLAX EFFECT ===
+document.addEventListener('mousemove', (e) => {
+    const shapes = document.querySelectorAll('.animated-shape');
+    const x = e.clientX / window.innerWidth;
+    const y = e.clientY / window.innerHeight;
     
-    const card = detail.parentElement;
-    const allDetails = document.querySelectorAll('.project-detail');
-    const allCards = document.querySelectorAll('.project-card');
-    
-    // Close all other details
-    allDetails.forEach(d => {
-        if (d.id !== projectId + '-detail') {
-            d.classList.remove('active');
-        }
-    });
-    
-    allCards.forEach(c => {
-        if (c !== card) {
-            c.classList.remove('expanded');
-        }
-    });
-    
-    // Toggle current detail
-    detail.classList.toggle('active');
-    card.classList.toggle('expanded');
-}
-
-// Add click event to project cards
-document.querySelectorAll('.project-card').forEach(card => {
-    card.addEventListener('click', function(e) {
-        // Don't toggle if clicking on the coming soon card
-        if (this.classList.contains('coming-soon')) {
-            return;
-        }
+    shapes.forEach((shape, index) => {
+        const speed = (index + 1) * 20;
+        const xPos = (x - 0.5) * speed;
+        const yPos = (y - 0.5) * speed;
         
-        const projectId = this.getAttribute('data-project');
-        if (projectId) {
-            toggleProjectDetail(projectId);
-        }
+        shape.style.transform = `translate(${xPos}px, ${yPos}px)`;
     });
 });
 
-// === FADE IN ANIMATION ON SCROLL === 
-const fadeElements = document.querySelectorAll('.timeline-item, .project-card, .skill-item, .cert-card');
-
-const fadeObserver = new IntersectionObserver((entries) => {
+// === SMOOTH REVEAL ON SCROLL ===
+const revealElements = document.querySelectorAll('.fade-in-up');
+const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
         }
     });
 }, {
@@ -241,20 +512,29 @@ const fadeObserver = new IntersectionObserver((entries) => {
     rootMargin: '0px 0px -50px 0px'
 });
 
-fadeElements.forEach(element => {
-    element.classList.add('fade-in');
-    fadeObserver.observe(element);
+revealElements.forEach(element => {
+    element.style.opacity = '0';
+    element.style.transform = 'translateY(30px)';
+    element.style.transition = 'all 0.6s ease';
+    revealObserver.observe(element);
 });
 
-// === COFFEE CARD CLICK === 
-if (coffeeCard) {
-    coffeeCard.addEventListener('click', () => {
-        window.location.href = 'mailto:betulaykaba.work@gmail.com?subject=Kahve Sohbeti';
-    });
-}
+// === KEYBOARD NAVIGATION ===
+document.addEventListener('keydown', (e) => {
+    // Press '1-6' to navigate sections
+    const sections = ['#home', '#about', '#experience', '#projects', '#skills', '#contact'];
+    const key = parseInt(e.key);
+    
+    if (key >= 1 && key <= 6) {
+        const target = document.querySelector(sections[key - 1]);
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+});
 
-// === PERFORMANCE OPTIMIZATION === 
-// Debounce function for scroll events
+// === PERFORMANCE OPTIMIZATION ===
+// Debounce function
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
@@ -267,124 +547,89 @@ function debounce(func, wait) {
     };
 }
 
-// Optimized scroll handler
-const optimizedScroll = debounce(() => {
-    // Handle any scroll-based animations here
-}, 100);
-
-window.addEventListener('scroll', optimizedScroll);
-
-// === LAZY LOADING IMAGES === 
-const lazyImages = document.querySelectorAll('img[data-src]');
-if (lazyImages.length > 0) {
-    const imageObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                img.removeAttribute('data-src');
-                imageObserver.unobserve(img);
-            }
-        });
-    });
-
-    lazyImages.forEach(img => imageObserver.observe(img));
-}
-
-// === FORM VALIDATION === 
-function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-}
-
-function validatePhone(phone) {
-    const re = /^[\d\s\-\+\(\)]+$/;
-    return re.test(phone) && phone.length >= 10;
-}
-
-// === ACCESSIBILITY IMPROVEMENTS === 
-// Keyboard navigation for project cards
-document.querySelectorAll('.project-card').forEach(card => {
-    card.setAttribute('tabindex', '0');
-    card.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            this.click();
+// Throttle function
+function throttle(func, limit) {
+    let inThrottle;
+    return function() {
+        const args = arguments;
+        const context = this;
+        if (!inThrottle) {
+            func.apply(context, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
         }
-    });
-});
+    };
+}
 
-// Skip to content link
+// === EASTER EGG ===
+const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+let konamiIndex = 0;
+
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Tab' && !document.querySelector('.skip-to-content')) {
-        const skipLink = document.createElement('a');
-        skipLink.href = '#home';
-        skipLink.className = 'skip-to-content';
-        skipLink.textContent = 'Ana içeriğe geç';
-        skipLink.style.cssText = `
-            position: absolute;
-            top: -40px;
-            left: 0;
-            background: var(--primary);
-            color: white;
-            padding: 8px;
-            z-index: 100;
-            text-decoration: none;
-        `;
-        skipLink.addEventListener('focus', () => {
-            skipLink.style.top = '0';
-        });
-        skipLink.addEventListener('blur', () => {
-            skipLink.style.top = '-40px';
-        });
-        document.body.insertBefore(skipLink, document.body.firstChild);
-    }
-});
-
-// === PRINT FUNCTIONALITY === 
-window.addEventListener('beforeprint', () => {
-    document.body.classList.add('printing');
-});
-
-window.addEventListener('afterprint', () => {
-    document.body.classList.remove('printing');
-});
-
-// === ERROR HANDLING === 
-window.addEventListener('error', (e) => {
-    console.error('An error occurred:', e.error);
-});
-
-// === INITIALIZE === 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Betülay Kaba Portfolio - Loaded Successfully');
-    
-    // Check for required elements
-    const requiredElements = ['navbar', 'hero', 'projects', 'skills', 'contact'];
-    requiredElements.forEach(id => {
-        if (!document.getElementById(id) && !document.querySelector(`.${id}`)) {
-            console.warn(`Required element missing: ${id}`);
+    if (e.key === konamiCode[konamiIndex]) {
+        konamiIndex++;
+        if (konamiIndex === konamiCode.length) {
+            activateEasterEgg();
+            konamiIndex = 0;
         }
-    });
-    
-    // Initialize AOS or other libraries if needed
-    if (typeof AOS !== 'undefined') {
-        AOS.init();
+    } else {
+        konamiIndex = 0;
     }
 });
 
-// === COOKIE CONSENT (if needed) === 
-function checkCookieConsent() {
-    if (!localStorage.getItem('cookieConsent')) {
-        // Show cookie consent banner if needed
-    }
+function activateEasterEgg() {
+    document.body.style.animation = 'rainbow 2s linear infinite';
+    showNotification('🎉 Gizli özelliği buldunuz! Tebrikler! 🎉');
+    
+    setTimeout(() => {
+        document.body.style.animation = '';
+    }, 5000);
 }
 
-// === GOOGLE ANALYTICS (Optional) === 
-// Uncomment and add your GA ID
-/*
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'GA_MEASUREMENT_ID');
-*/
+// === RAINBOW ANIMATION FOR EASTER EGG ===
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes rainbow {
+        0% { filter: hue-rotate(0deg); }
+        100% { filter: hue-rotate(360deg); }
+    }
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    @keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
+
+// === ERROR HANDLING ===
+window.addEventListener('error', (e) => {
+    console.error('Bir hata oluştu:', e.error);
+});
+
+// === PAGE VISIBILITY API ===
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        document.title = 'Geri dönün! - Betülay Kaba';
+    } else {
+        document.title = 'Betülay Kaba | Biyomedikal Mühendisi & Kalite Yönetim Uzmanı';
+    }
+});
+
+console.log('🚀 Betülay Kaba Portfolio - v2.0 Professional');
+console.log('💻 Developed with passion and precision');
+console.log('📧 Contact: betulaykaba.work@gmail.com');
