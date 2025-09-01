@@ -56,11 +56,11 @@ document.querySelectorAll('.mobile-menu-item').forEach(item => {
 
 // === TYPEWRITER EFFECT === 
 const phrases = [
-    "Biyomedikal Mühendisi 🧬",
-    "Kalite Yönetim Uzmanı 📋",
-    "MDR Regülasyon Eksperi 📑",
-    "3 Projede Ekip Lideri 👑",
-    "ISO 9001 İç Denetçi ✅"
+    "Biyomedikal Mühendisi ",
+    "Kalite Yönetim Uzmanı ",
+    "MDR Regülasyon Eksperi ",
+    "3 Projede Ekip Lideri ",
+    "ISO 9001 İç Denetçi "
 ];
 
 let phraseIndex = 0;
